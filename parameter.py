@@ -1,0 +1,9 @@
+# generator parameter
+N_max = 5
+N_min = 5
+M_max = 10
+M_min = 10
+K_max = 4
+K_min = 3
+Density_min = .5
+test_num = 1
