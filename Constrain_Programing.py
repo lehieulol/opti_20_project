@@ -21,40 +21,41 @@ from ortools.sat.python import cp_model
 import parameter
 
 
-def solve(vB, vA, vC, vD):
+def solve(N, M, K, linked):
     model = cp_model.CpModel()
 
     # Building model by Licht using edge list
-    N, M, K, linked = vB, vA, vC, vD
-    edges = [model.NewIntVar(0, 1, '') for _ in linked]
-    papers = [model.Add()]
-    judge = [model.Add()]
+    edges = { edge: model.NewIntVar(0, 1, '') for edge in linked }
+    papers = []
+    judges = []
 
+    # Populate sum alias
+    for p in range(N):
+        papers.append(sum( var for edge, var in edges.items() if edge[0]-1 == p ))
+    for j in range(M):
+        judges.append(sum( var for edge, var in edges.items() if edge[1]-1 == j ))
+
+    # Penalty is the maximum numbers of papers each judge works on
     penalty = model.NewIntVar(0, N, '')
-    model.AddMaxEquality(penalty, judge)
-    
+    model.AddMaxEquality(penalty, judges)
 
-    # Building model
-    vX = [[model.NewIntVar(0, 1, "") for p in range(vB)] for s in range(vA)]
-    # C1
-    for p in range(vB):
-        model.Add(sum(vX[s][p] for s in range(vA)) >= vC)
-    # C2
-    for p in range(vB):
-        for s in range(vA):
-            if (s + 1) in vD[p]: continue  # Skip if Scientist s can work on Paper p
-            model.Add(vX[s][p] == 0)
-    # Objective
-    vY = model.NewIntVar(0, vB, "")
-    model.AddMaxEquality(vY, [sum(vX[s][p] for p in range(vB)) for s in range(vA)])
-    model.Minimize(vY)
+    # Constrain: A paper requires at least K judges
+    for p in range(N):
+        model.Add(papers[p] >= K)
+
+    # Objective: Minimize number of papers worked on by any judges
+    model.Minimize(penalty)
 
     # Print solution
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = parameter.wait - 2
     status = solver.Solve(model)
     if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-        matrix = [['#' if (solver.Value(vX[s][p])) else '.' for s in range(vA)] for p in range(vB)]
-        return solver.Value(vY), matrix
+        matrix = []
+        for p in range(N):
+            # Build line
+            line = [ solver.Value(edges[p, j]) if (p, j) in edges else 0 for j in range(M) ]
+            matrix.append(['#' if column else '.' for column in line])
+        return solver.Value(penalty), matrix
     else:
         return 'No solution found', []
