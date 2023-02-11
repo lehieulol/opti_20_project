@@ -1,4 +1,13 @@
 def get_input(filename, linked_type='edge list'):
+    """
+
+    :param filename:
+    :param linked_type:
+    'adjacency list'
+    'edge list'
+    'matrix' (not implemented)
+    :return:
+    """
     f = open(filename)
     N, M, K = map(int, f.readline().split())
     print(N, M, K)
@@ -12,11 +21,19 @@ def get_input(filename, linked_type='edge list'):
         for i in range(N):
             a = f.readline().split()
             a.pop(0)
-            a = map(int,a)
+            a = map(int, a)
             for _ in a:
-                linked.append((i+1,_))
+                linked.append((i + 1, _))
     else:
         raise ValueError
     print(linked)
     f.close()
     return N, M, K, linked
+
+
+def ELtoM(N, M, edge_list, picked):
+    matrix = [['.' for _ in range(M)] for _ in range(N)]
+    for _ in range(len(picked)):
+        if picked[_] == 1:
+            matrix[edge_list[_][0]-1][edge_list[_][1]-1] = '#'
+    return matrix

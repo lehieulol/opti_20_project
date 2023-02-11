@@ -1,9 +1,13 @@
 # generator parameter
-N_max = 5
-N_min = 5
-M_max = 10
-M_min = 10
-K_max = 4
-K_min = 3
+N_max = 50
+N_min = 50
+M_max = 100
+M_min = 100
+K_max = 40
+K_min = 30
 Density_min = .5
 test_num = 1
+
+# grader parameter
+# minute
+wait = 5

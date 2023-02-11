@@ -1,5 +1,7 @@
 import math
+
 from utils import ELtoM
+
 
 def solve(_N, _M, _K, _linked):
     """
@@ -22,6 +24,9 @@ def solve(_N, _M, _K, _linked):
         nonlocal _min
         nonlocal min_picked
         if _linked[current][0] > 1 and count_n[_linked[current][0] - 1] < _K:
+            return
+        # cutoff if there is no better solution
+        if max(count_m) >= _min:
             return
         if current >= len(_linked) - 1:
             min_picked.clear()
