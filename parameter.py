@@ -6,8 +6,8 @@ M_min = 100
 K_max = 40
 K_min = 30
 Density_min = .5
-test_num = 1
+test_num = 10
 
 # grader parameter
 # minute
-wait = 5
+wait = 50

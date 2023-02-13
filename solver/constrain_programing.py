@@ -48,7 +48,7 @@ def solve(N, M, K, linked):
 
     # Print solution
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = parameter.wait - 2
+    solver.parameters.max_time_in_seconds = parameter.wait - 1
     status = solver.Solve(model)
     if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         matrix = []

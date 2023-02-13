@@ -9,10 +9,8 @@ import threading
 from threading import Thread, Timer
 import time
 
-import Backtrack
-import Branch_and_Bound
-import DCFlow
-import Constrain_Programing
+from solver import backtrack, branch_and_bound, constrain_programing, dcflow, genetic_algorithm, linear_programming, \
+    random
 
 
 # 'test/N_{}_{}_M_{}_{}_K_{}_{}_Dense_{}_{}'.format(parameter.N_min,parameter.N_max, parameter.M_min, parameter.M_max, parameter.K_min, parameter.K_max, parameter.Density_min, T), 'w'
@@ -33,7 +31,6 @@ class Grader(Thread):
                 return id
 
     def interupt(self):
-        print('interupt called')
         self.end_time = time.time()
         thread_id = self.get_id()
         res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, ctypes.py_object(SystemExit))
@@ -44,7 +41,10 @@ class Grader(Thread):
     def run(self):
         self.start_time = time.time()
         Timer(parameter.wait, self.interupt).start()
-        self.ret = self.solver(self._N, self._M, self._K, self._linked)
+        try:
+            self.ret = self.solver(self._N, self._M, self._K, self._linked)
+        except Exception as e:
+            self.ret = ['failed: ' + str(e), []]
         self.end_time = time.time()
 
     def get_time(self):
@@ -57,28 +57,33 @@ class Grader(Thread):
         return self.ret
 
 
+generator.generate()
 T = parameter.test_num
-solvers = [Constrain_Programing.solve, DCFlow.solve]
+solvers = [backtrack.solve, branch_and_bound.solve, constrain_programing.solve, dcflow.solve, genetic_algorithm.solve,
+           linear_programming.solve, random.solve]
+
 while T:
     T -= 1
     N, M, K, linked = get_input(
         'test/N_{}_{}_M_{}_{}_K_{}_{}_Dense_{}_{}'.format(parameter.N_min, parameter.N_max, parameter.M_min,
                                                           parameter.M_max, parameter.K_min, parameter.K_max,
                                                           parameter.Density_min, T), linked_type='edge list')
-
     graders = []
     for solver in solvers:
         g = Grader(solver, N, M, K, linked)
         g.start()
-        graders.append(g)
-    # chuyen phan thread join re ngoai
-    for g in graders:
+        graders.append((g, solver.__module__, T))
+
+    for g, solver, testcase in graders:
         g.join()
-        print('time:', g.get_time())
+        print(solver, 'test: ', testcase, 'time:', g.get_time())
         a = g.get_return()
         if a is None:
-            print('failed')
+            print('failed: No answer')
         else:
             print(a[0])
+            '''
             for i in a[1]:
                 print(i)
+            '''
+

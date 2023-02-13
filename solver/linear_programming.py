@@ -1,6 +1,5 @@
 from ortools.linear_solver import pywraplp
 from math import ceil
-import parameter
 
 def solve(N, M, K, linked):
     solver = pywraplp.Solver('minimize_maximum_papers',

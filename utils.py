@@ -10,7 +10,6 @@ def get_input(filename, linked_type='edge list'):
     """
     f = open(filename)
     N, M, K = map(int, f.readline().split())
-    print(N, M, K)
     linked = []
     if linked_type == 'adjacency list':
         for i in range(N):
@@ -26,7 +25,6 @@ def get_input(filename, linked_type='edge list'):
                 linked.append((i + 1, _))
     else:
         raise ValueError
-    print(linked)
     f.close()
     return N, M, K, linked
 

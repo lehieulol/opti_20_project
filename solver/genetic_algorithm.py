@@ -12,7 +12,6 @@ def solve(N, M, K, linked):
     start_time = time.time()
     population_size = len(linked)
     next_population_size = int(population_size*.1)
-    print('population_size:', population_size, '| next_population_size:', next_population_size)
     bit_len = len(linked)
     # randomized population
     current_population = []
