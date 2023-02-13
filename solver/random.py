@@ -1,3 +1,5 @@
+import time
+
 import parameter
 import random
 from math import ceil
@@ -5,6 +7,8 @@ from math import ceil
 TRIES = 1000 # TODO: replace with time
 
 def solve(N, M, K, linked):
+    start_time = time.time()
+
     edges = { edge: False for edge in linked }
 
     papers = lambda _edges, p: sum(var for edge, var in _edges.items() if edge[0]-1 == p) # number of judges for a paper
@@ -42,7 +46,8 @@ def solve(N, M, K, linked):
     for _ in range(TRIES):
         if bestPenalty <= minPossible:
             break
-
+        if time.time() - start_time >= parameter.wait - 1:
+            break
         # Pick random paper and random allowed judge
         # then toggle judge working that paper
         p = random.choice(paperChoices)
