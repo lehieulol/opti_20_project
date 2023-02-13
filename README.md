@@ -11,3 +11,8 @@
 
 - Line 1: `N M K`
 - Line i+1 (i: 1->N): `q_i L[i]` (q_i is length of `L[i]`)
+
+### Package
+
+- ortool
+- bitarray (for Genetic_Algorigthm)
