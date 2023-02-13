@@ -64,9 +64,10 @@ def solve(N, M, K, linked):
         chosen_sample = [current_population[random.randrange(int(cut[i] * population_size), int(cut[i + 1] * population_size))][0] for i in chosen_cut]
         return chosen_sample
 
+    # starting population
     for _ in range(population_size):
         temp = util.urandom(bit_len)
-        if random.random() < 0.7:
+        if random.random() < 0.01:
             temp.setall(1)
         current_population.append((temp, eval(temp)))
 

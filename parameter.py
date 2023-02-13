@@ -10,4 +10,4 @@ test_num = 10
 
 # grader parameter
 # minute
-wait = 50
+wait = 60
