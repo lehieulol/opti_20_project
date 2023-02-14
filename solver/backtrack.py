@@ -46,5 +46,8 @@ def solve(_N, _M, _K, _linked):
     try:
         backtrack(0)
     finally:
-        return _min, ELtoM(_N, _M, edge_list=_linked, picked=min_picked)
+        if _min != float('inf'):
+            return _min, ELtoM(_N, _M, edge_list=_linked, picked=min_picked)
+        else:
+            return None
 

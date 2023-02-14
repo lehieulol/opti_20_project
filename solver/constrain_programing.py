@@ -58,4 +58,4 @@ def solve(N, M, K, linked):
             matrix.append(['#' if column else '.' for column in line])
         return solver.Value(penalty), matrix
     else:
-        return 'No solution found', []
+        return None

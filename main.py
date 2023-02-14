@@ -22,6 +22,7 @@ class Grader(Thread):
         self.start_time = None
         self.end_time = None
         self.ret = None
+        self.exception = None
 
     def get_id(self):
         if hasattr(self, '_thread_id'):
@@ -44,7 +45,7 @@ class Grader(Thread):
         try:
             self.ret = self.solver(self._N, self._M, self._K, self._linked)
         except Exception as e:
-            self.ret = ['failed: ' + str(e), []]
+            self.exception = e
         self.end_time = time.time()
 
     def get_time(self):
@@ -62,6 +63,14 @@ T = parameter.test_num
 solvers = [backtrack.solve, branch_and_bound.solve, constrain_programing.solve, dcflow.solve, genetic_algorithm.solve,
            linear_programming.solve, random.solve]
 
+failrate = {}
+average_time = {}
+average_penalty = {}
+for solver in solvers:
+    failrate[solver.__module__] = 0
+    average_time[solver.__module__] = 0
+    average_penalty[solver.__module__] = 0
+
 while T:
     T -= 1
     N, M, K, linked = get_input(
@@ -76,14 +85,20 @@ while T:
 
     for g, solver, testcase in graders:
         g.join()
-        print(solver, 'test: ', testcase, 'time:', g.get_time())
         a = g.get_return()
         if a is None:
-            print('failed: No answer')
+            failrate[solver] += 1/parameter.test_num
         else:
-            print(a[0])
-            '''
-            for i in a[1]:
-                print(i)
-            '''
+            average_penalty[solver] += a[0]/parameter.test_num
+        average_time[solver] += g.get_time()/parameter.test_num
+
+for key, value in failrate.items():
+    if value:
+        average_penalty[key] /= value
+        average_time[key] /= value
+
+for key, value in failrate.items():
+    print(key, value, average_time[key], average_penalty[key])
+
+
 
