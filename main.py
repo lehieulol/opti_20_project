@@ -1,3 +1,5 @@
+import winsound
+
 import ctypes
 
 import generator
@@ -87,10 +89,10 @@ while T:
         g.join()
         a = g.get_return()
         if a is None:
-            failrate[solver] += 1/parameter.test_num
+            failrate[solver] += 1 / parameter.test_num
         else:
-            average_penalty[solver] += a[0]/parameter.test_num
-        average_time[solver] += g.get_time()/parameter.test_num
+            average_penalty[solver] += a[0] / parameter.test_num
+        average_time[solver] += g.get_time() / parameter.test_num
 
 for key, value in failrate.items():
     if value:
@@ -98,7 +100,6 @@ for key, value in failrate.items():
         average_time[key] /= value
 
 for key, value in failrate.items():
-    print(key, value, average_time[key], average_penalty[key])
+    print(value, average_time[key], average_penalty[key])
 
-
-
+winsound.Beep(440, 2000)
